@@ -1,2 +1,7 @@
+$ command -v godot4
+EXIT_CODE=1
+$ command -v godot
+EXIT_CODE=1
+$ command -v blender
+EXIT_CODE=1
 本环境未预装，本轮未测引擎
-EXIT_CODE=0
