@@ -1,0 +1,35 @@
+name: Publish Blender Linux Asset
+
+on:
+  push:
+    paths:
+      - .github/workflows/publish-blender-linux.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Download and verify official Blender archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='blender-5.2.1-linux-x64.tar.xz'
+          curl --fail --location --retry 5 --retry-delay 5 --output "$file" 'https://download.blender.org/release/Blender5.2/blender-5.2.1-linux-x64.tar.xz'
+          echo 'a31f524fa99a527d3d52b7f5aaa68c34e1a19d5a1c9473f79c5cc610fd5b10e9  blender-5.2.1-linux-x64.tar.xz' | sha256sum --check -
+
+      - name: Publish GitHub Release asset
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='blender-5.2.1-linux-x64'
+          if ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --title 'Blender 5.2.1 Linux x64' --notes 'Official Blender Foundation Linux x64 build, downloaded from blender.org and verified against the published SHA-256 checksum.'
+          fi
+          gh release upload "$tag" 'blender-5.2.1-linux-x64.tar.xz' --repo "$GITHUB_REPOSITORY"
