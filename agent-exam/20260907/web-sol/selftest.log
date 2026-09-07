@@ -1,0 +1,14 @@
+$ cd /mnt/data/ga-exam-01-web-sol && python3 selftest.py
+PASS valid: []
+PASS manifest: ["manifest_type"]
+PASS front_fields: ["schema_version", "asset_id", "units"]
+PASS lod_type: ["lods_type"]
+PASS lod_item_skips_order: ["lod_item"]
+PASS lod_order: ["lod_order"]
+PASS attachment_type: ["attachments_type"]
+PASS attachment_invalid_and_duplicate_exact_untrimmed: ["attachment_item", "attachment_duplicate"]
+PASS attachment_huge_int: []
+PASS attachment_bool_nan: ["attachment_item"]
+PASS error_order: ["schema_version", "asset_id", "units", "lod_order", "attachment_item", "attachment_duplicate"]
+GA_EXAM_SELFTEST_OK cases=11 json_shape_probes=12
+EXIT_CODE=0
