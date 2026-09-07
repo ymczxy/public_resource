@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Download public reference photographs without image manipulation
+      - name: Download additional original photographs without manipulation
         shell: bash
         run: |
           mkdir -p refs
@@ -20,23 +20,17 @@ jobs:
           from urllib.request import Request, urlopen
           import json, hashlib
           refs = [
-            ('front_mod','https://des.mod.uk/media/lyedtw1j/2022_010_813.jpg'),
-            ('top_boeing','https://www.boeing.com/content/dam/boeing/v2/products/ah-64-apache/ah-64-roadblock-1.jpg'),
-            ('underside_harris','https://media.defense.gov/2016/Oct/04/2001643615/-1/-1/0/160929-A-PG801-004A.JPG'),
-            ('side_james','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/1707/3601287/1000w_q95.jpg'),
-            ('overhead_abraham','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2307/7922372/1000w_q95.jpg'),
-            ('lower_cook','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2312/8151694/1000w_q95.jpg'),
-            ('flight_robinson1','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2603/9573538/1000w_q95.jpg'),
-            ('flight_robinson2','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2603/9573544/1000w_q95.jpg'),
-            ('flight_rich','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2004/6181358/1000w_q95.jpg'),
-            ('rear_commons','https://upload.wikimedia.org/wikipedia/commons/2/2c/Rear_View_of_ROCA_AH-64E_818_Display_at_Hsinchu_Air_Force_Base_20151121.jpg'),
-            ('right_commons','https://upload.wikimedia.org/wikipedia/commons/d/d7/ROCA_AH-64E_810_Display_at_ROCMA_Ground_Right_Side_View_20140531.jpg'),
-            ('leftrear_commons','https://upload.wikimedia.org/wikipedia/commons/1/15/ROCA_AH-64E_816_Display_at_Hukou_Camp_Left_Rear_View_20140329.jpg')]
+            ('side_hockley','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2602/9504635/1000w_q95.jpg'),
+            ('side_mcneil1','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2111/6929108/1000w_q95.jpg'),
+            ('side_mcneil2','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2111/6929106/1000w_q95.jpg'),
+            ('bottom_robinson_full','https://d1ldvf68ux039x.cloudfront.net/photos/2603/9573538.jpg'),
+            ('bottom_robinson_2000','https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2603/9573538/2000w_q95.jpg'),
+            ('rear_james_full','https://d1ldvf68ux039x.cloudfront.net/photos/1707/3601287.jpg')]
           def get(item):
             name,url=item
             row={'name':name,'url':url}
             try:
-              req=Request(url,headers={'User-Agent':'GA3D-reference-comparison/1.0 (reference photography; no scraping of private data)'})
+              req=Request(url,headers={'User-Agent':'GA3D-reference-comparison/1.0'})
               with urlopen(req,timeout=35) as response: raw=response.read()
               if not raw.startswith(b'\xff\xd8'): raise ValueError('Not a JPEG')
               Path('refs',name+'.jpg').write_bytes(raw)
@@ -44,12 +38,12 @@ jobs:
             except Exception as e: row.update(ok=False,error=str(e))
             print(json.dumps(row),flush=True)
             return row
-          with ThreadPoolExecutor(max_workers=4) as pool: rows=list(pool.map(get,refs))
-          Path('refs/downloads.json').write_text(json.dumps(rows,indent=2))
+          with ThreadPoolExecutor(max_workers=3) as pool: rows=list(pool.map(get,refs))
+          Path('refs/downloads_extra.json').write_text(json.dumps(rows,indent=2))
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: ah64-photo-refs-20260907
+          name: ah64-photo-refs-extra-20260907
           path: refs/
           retention-days: 1
           compression-level: 0
