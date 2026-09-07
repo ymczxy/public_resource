@@ -8,16 +8,16 @@
 - solution.py — implementation of validate_asset(value)
 - selftest.py — minimal local verification harness
 - selftest.log — raw self-test stdout/stderr plus exit code
-- engine.log — Godot/Blender probe and execution result, or explicit not-preinstalled note
+- engine.log — raw Godot/Blender executable probes and result
 
 ## Executed commands and results
 ### Python self-test
 Command: `cd /mnt/data/ga-exam-01-web-sol && python3 selftest.py`
-Result: exit code 0. See `selftest.log` for raw output.
+Result: exit code 0; `GA_EXAM_SELFTEST_OK cases=11 json_shape_probes=12`. See `selftest.log`.
 
-### Engine probe
-Detected: None
-Result: 本环境未预装，本轮未测引擎. See `engine.log`.
+### Engine executable probe
+Commands: `command -v godot4`, `command -v godot`, `command -v blender`
+Results: all exit code 1 / no path returned; therefore: 本环境未预装，本轮未测引擎. See `engine.log`.
 
 ## Next independent acceptance
 1. Import `validate_asset` from `solution.py` in a clean Python 3 environment.
